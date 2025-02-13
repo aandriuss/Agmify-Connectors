@@ -37,6 +37,8 @@ public class RevitBeam : Beam
     set => base.level = value;
   }
 
+  public Vector facingOrientation { get; set; }
+
   #region Schema Info Constructors
 
   [SchemaInfo("RevitBeam", "Creates a Revit beam by curve and base level.", "Revit", "Structure")]

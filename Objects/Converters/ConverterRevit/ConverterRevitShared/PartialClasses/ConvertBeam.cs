@@ -6,6 +6,8 @@ using Objects.BuiltElements;
 using Objects.BuiltElements.Revit;
 using Speckle.Core.Models;
 using DB = Autodesk.Revit.DB;
+using Objects.Geometry;
+using System;
 
 namespace Objects.Converter.Revit;
 
@@ -126,6 +128,35 @@ public partial class ConverterRevit
     {
       SetInstanceParameters(revitBeam, speckleRevitBeam);
     }
+
+    if (speckleRevitBeam?.facingOrientation != null)
+    {
+      var currentOrientation = revitBeam.FacingOrientation;
+      var targetOrientation = new XYZ(
+          speckleRevitBeam.facingOrientation.x,
+          speckleRevitBeam.facingOrientation.y,
+          speckleRevitBeam.facingOrientation.z
+      );
+
+      // Calculate rotation axis and angle
+      var axis = (revitBeam.Location as LocationCurve).Curve.GetEndPoint(0).Subtract(
+          (revitBeam.Location as LocationCurve).Curve.GetEndPoint(1)
+      ).Normalize();
+
+      var angle = currentOrientation.AngleTo(targetOrientation);
+
+      // Rotate element if angle is not zero (using Revit's built-in comparison)
+      if (Math.Abs(angle) > 1.0e-9)  // Standard Revit tolerance
+      {
+        ElementTransformUtils.RotateElement(
+            Doc,
+            revitBeam.Id,
+            DB.Line.CreateBound((revitBeam.Location as LocationCurve).Curve.GetEndPoint(0),
+                               (revitBeam.Location as LocationCurve).Curve.GetEndPoint(1)),
+            angle
+        );
+      }
+    }
     else
     {
       TrySetParam(revitBeam, BuiltInParameter.INSTANCE_FREE_HOST_OFFSET_PARAM, -baseOffset);
@@ -157,6 +188,11 @@ public partial class ConverterRevit
     speckleBeam.level = ConvertAndCacheLevel(revitBeam, BuiltInParameter.INSTANCE_REFERENCE_LEVEL_PARAM);
 
     speckleBeam.displayValue = GetElementDisplayValue(revitBeam);
+    speckleBeam.facingOrientation = new Vector(
+    revitBeam.FacingOrientation.X,
+    revitBeam.FacingOrientation.Y,
+    revitBeam.FacingOrientation.Z
+);
 
     GetAllRevitParamsAndIds(speckleBeam, revitBeam);
 

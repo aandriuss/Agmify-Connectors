@@ -61,4 +61,7 @@
     <Copy DestinationFolder="$(SolutionDir)\Release\Release$(RevitVersion)\$(RevitFolderName)\%(RecursiveDir)" SourceFiles="@(SourceDLLs)" />
     <Copy DestinationFolder="$(SolutionDir)\Release\Release$(RevitVersion)\" SourceFiles="@(SourceManifest)" />
   </Target>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="C:\Users\andriusb\AppData\Roaming\Autodesk\Revit\Addins\2022" />
+  </Target>
 </Project>
