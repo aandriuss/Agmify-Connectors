@@ -190,8 +190,26 @@ public partial class ConverterCSI
     Model.FrameObj.GetSection(name, ref property, ref SAuto);
     var speckleProperty = Property1DToSpeckle(property);
 
+    // NOTE: GetDesignOrientation is only valid in etabs world.
+    // For sap, we need to figure out the orientation using some basic coordinate conditionals
+    // Defaulting to null (previous approach) led to generic models being received in Revit, not cool.
+#if ETABS
     eFrameDesignOrientation frameDesignOrientation = eFrameDesignOrientation.Null;
     Model.FrameObj.GetDesignOrientation(name, ref frameDesignOrientation);
+#else
+    eFrameDesignOrientation frameDesignOrientation = eFrameDesignOrientation.Brace;
+    if (Math.Abs(pointJNode.basePoint.z - pointINode.basePoint.z) < 0.001)
+    {
+      frameDesignOrientation = eFrameDesignOrientation.Beam;
+    }
+    else if (
+      (Math.Abs(pointJNode.basePoint.x - pointINode.basePoint.x) < 0.001)
+      && (Math.Abs(pointJNode.basePoint.y - pointINode.basePoint.y) < 0.001)
+    )
+    {
+      frameDesignOrientation = eFrameDesignOrientation.Column;
+    }
+#endif
     var elementType = FrameDesignOrientationToElement1dType(frameDesignOrientation);
     var speckleStructFrame = new CSIElement1D(speckleLine, speckleProperty, elementType)
     {
@@ -338,9 +356,9 @@ public partial class ConverterCSI
       Model.FrameObj.SetSection(newFrame, propertyName);
     }
 
-    if (element1D.orientationAngle != null)
+    if (element1D.orientationAngle != 0)
     {
-      Model.FrameObj.SetLocalAxes(newFrame, element1D.orientationAngle);
+      Model.FrameObj.SetLocalAxes(newFrame, element1D.orientationAngle * (180 / Math.PI)); // Convert from radians to degrees
     }
     end1Release = end1Release.Select(b => !b).ToArray();
     end2Release = end2Release.Select(b => !b).ToArray();
