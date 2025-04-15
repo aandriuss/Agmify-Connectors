@@ -30,7 +30,7 @@ namespace Speckle.Core.Credentials;
 /// </summary>
 public static class AccountManager
 {
-  public const string DEFAULT_SERVER_URL = "https://app.speckle.systems";
+  public const string DEFAULT_SERVER_URL = "https://agmify.net";
 
   private static readonly SQLiteTransport s_accountStorage = new(scope: "Accounts");
   private static volatile bool s_isAddingAccount;
@@ -563,7 +563,7 @@ public static class AccountManager
     var task = Task.Run(() =>
     {
       using var listener = new HttpListener();
-      var localUrl = "http://localhost:29363/";
+      var localUrl = "http://localhost:29369/";
       listener.Prefixes.Add(localUrl);
       listener.Start();
       SpeckleLog.Logger.Debug("Listening for auth redirects on {localUrl}", localUrl);

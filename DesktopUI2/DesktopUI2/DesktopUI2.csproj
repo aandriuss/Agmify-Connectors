@@ -20,6 +20,11 @@
     </ItemGroup>
     <ItemGroup>
         <None Remove="App.xaml" />
+        <None Remove="Assets\Montserrat-Bold.ttf" />
+        <None Remove="Assets\Montserrat-Italic.ttf" />
+        <None Remove="Assets\Montserrat-Medium.ttf" />
+        <None Remove="Assets\Montserrat-Regular.ttf" />
+        <None Remove="Assets\Montserrat-SemiBold.ttf" />
         <None Remove="Styles\NotificationCard.xaml" />
         <None Remove="Styles\NotificationManager.xaml" />
         <None Remove="Views\Controls\CollaboratorsControl.xaml" />

@@ -12,8 +12,8 @@ namespace DesktopUI2;
 public class App : Application
 {
   //Speckle theme
-  public static readonly Color Primary = Color.FromRgb(59, 130, 246);
-  public static readonly Color Secondary = Color.FromRgb(131, 180, 255);
+  public static readonly Color Primary = Color.FromRgb(54, 64, 90);
+  public static readonly Color Secondary = Color.FromRgb(111, 91, 166);
   public static readonly Color Accent = Color.FromRgb(255, 191, 0);
 
   public override void Initialize()

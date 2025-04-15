@@ -877,7 +877,7 @@ public class HomeViewModel : ReactiveObject, IRoutableViewModel
     MainUserControl.NotificationManager.Show(
       new PopUpNotificationViewModel
       {
-        Title = "🥳 Account removed",
+        Title = "Account removed",
         Message = "The account has been removed from all your Connectors!",
         Expiration = TimeSpan.Zero,
         Type = NotificationType.Error
